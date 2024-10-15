@@ -1,0 +1,97 @@
+// AI Algorithm for 2048 
+function AI(grid) {
+    this.grid = grid; // Game grid reference
+}
+
+// Evaluate all possible moves and return the best one
+AI.prototype.bestMove = function() {
+    const moves = [0, 1, 2, 3]; // Up, Right, Down, Left
+    let bestScore = -Infinity;
+    let bestMove = -1;
+
+    moves.forEach(move => {
+        let gridCopy = this.grid.copy();
+        let result = this.simulateMove(gridCopy, move);
+        if (result.score > bestScore && result.moved) {
+            bestScore = result.score;
+            bestMove = move;
+        }
+    });
+
+    return bestMove;
+};
+
+// Simulate a move and return the resulting score and whether a move occurred
+AI.prototype.simulateMove = function(grid, direction) {
+    let moved = false;
+    let score = 0;
+    let size = grid.size;
+    let traverseX = [0, 1, 0, -1]; // Directions to traverse the grid
+    let traverseY = [-1, 0, 1, 0];
+    let startX = direction === 1 ? size - 1 : 0;
+    let startY = direction === 2 ? size - 1 : 0;
+    let deltaX = direction === 1 ? -1 : 1;
+    let deltaY = direction === 2 ? -1 : 1;
+
+    for (let i = 0; i < size; i++) {
+        let x = startX;
+        let y = startY;
+        while (x >= 0 && x < size && y >= 0 && y < size) {
+            if (grid.cells[x][y] !== null) {
+                let nextX = x + traverseX[direction];
+                let nextY = y + traverseY[direction];
+                while (nextX >= 0 && nextX < size && nextY >= 0 && nextY < size && grid.cells[nextX][nextY] === null) {
+                    nextX += traverseX[direction];
+                    nextY += traverseY[direction];
+                }
+
+                if (nextX >= 0 && nextX < size && nextY >= 0 && nextY < size && grid.cells[nextX][nextY].value === grid.cells[x][y].value) {
+                    // Merge tiles
+                    grid.cells[nextX][nextY].value *= 2;
+                    score += grid.cells[nextX][nextY].value;
+                    grid.cells[x][y] = null;
+                    moved = true;
+                } else {
+                    // Move tile
+                    let validNextX = nextX - traverseX[direction];
+                    let validNextY = nextY - traverseY[direction];
+                    if (validNextX !== x || validNextY !== y) {
+                        grid.cells[validNextX][validNextY] = grid.cells[x][y];
+                        grid.cells[x][y] = null;
+                        moved = true;
+                    }
+                }
+            }
+
+            x += deltaX;
+            y += deltaY;
+        }
+    }
+
+    return { score: score, moved: moved };
+};
+
+// Auto-play function to continuously play the game
+function autoPlay(ai, gameManager) {
+    if (!gameManager.isGameTerminated()) {
+        let bestMove = ai.bestMove();
+        if (bestMove !== -1) {
+            gameManager.move(bestMove);
+            setTimeout(() => autoPlay(ai, gameManager), 200);
+        } else {
+            console.log("No moves available");
+        }
+    } else {
+        console.log("Game Over or Won");
+    }
+}
+
+// Ensure gameManager is defined and start the AI when the page loads
+window.addEventListener('load', function() {
+    if (typeof window.gameManager !== 'undefined') {
+        var ai = new AI(window.gameManager.grid);
+        autoPlay(ai, window.gameManager);
+    } else {
+        console.error('GameManager is not initialized or undefined.');
+    }
+});
