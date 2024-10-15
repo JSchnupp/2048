@@ -1,0 +1,126 @@
+/*
+// Mock Tile class
+class Tile {
+    constructor(position, value) {
+        this.position = position;
+        this.value = value;
+    }
+
+    savePosition() {
+        // Save logic for the tile's position
+    }
+
+    updatePosition(newPosition) {
+        this.position = newPosition;
+    }
+}
+
+// Mock Grid class
+class Grid {
+    constructor(size) {
+        this.size = size;
+        this.cells = Array.from({ length: size }, () => Array(size).fill(null));
+    }
+
+    copy() {
+        const newGrid = new Grid(this.size);
+        newGrid.cells = this.cells.map(row => row.map(tile => (tile ? new Tile(tile.position, tile.value) : null)));
+        return newGrid;
+    }
+
+    moveAvailable(direction) {
+        // Logic to check if a move in the specified direction is available
+        return true; // Placeholder
+    }
+
+    removeTile(tile) {
+        // Logic to remove a tile from the grid
+    }
+
+    insertTile(tile) {
+        // Logic to insert a new tile into the grid
+    }
+
+    randomAvailableCell() {
+        // Logic to find a random available cell
+        return { x: 0, y: 0 }; // Placeholder
+    }
+}
+
+// Combined AI class
+function CombinedAI(game) {
+    this.game = game;
+    this.prevMove = -1;
+}
+
+CombinedAI.prototype.nextMove = function () {
+    // First, try moving based on an algorithm
+    var move = 0; // Start with moving up
+    if (move === this.prevMove) {
+        move = 3; // If the previous move was up, go down
+    }
+
+    if (this.game.moveAvailable(move)) {
+        this.prevMove = move;
+        return move;
+    }
+
+    // If the move is not available, try the priority-based approach
+    var priority = [0, 3, 1, 2]; // Up, Down, Left, Right
+    for (var i = 0; i < priority.length; i++) {
+        move = priority[i];
+        if (this.game.moveAvailable(move)) {
+            this.prevMove = move;
+            return move;
+        }
+    }
+
+    // If no priority moves are available, move randomly
+    do {
+        move = Math.floor(Math.random() * 4);
+    } while (!this.game.moveAvailable(move));
+
+    this.prevMove = move;
+    return move;
+};
+
+// Mock Game class
+class Game {
+    constructor(size) {
+        this.grid = new Grid(size);
+    }
+
+    moveAvailable(direction) {
+        return this.grid.moveAvailable(direction);
+    }
+
+    makeMove(direction) {
+        // Logic to apply the move in the game
+    }
+}
+
+// Testing the AI
+function testAI() {
+    const game = new Game(4); // Initialize a new game with a 4x4 grid
+    const combinedAI = new CombinedAI(game); // Create an instance of the AI
+
+    // Manually set up the grid state for testing (optional)
+    game.grid.cells[0][0] = new Tile({ x: 0, y: 0 }, 2);
+    game.grid.cells[0][1] = new Tile({ x: 0, y: 1 }, 2);
+    game.grid.cells[1][0] = new Tile({ x: 1, y: 0 }, 2);
+    game.grid.cells[1][1] = new Tile({ x: 1, y: 1 }, 4);
+
+    console.log("Current Grid State:");
+    console.log(game.grid.cells);
+
+    // Get the AI's next move
+    const bestMove = combinedAI.nextMove();
+    console.log("AI Move:", bestMove); // Output the best move 
+
+    // Apply the move to the game (assuming you have a method for that)
+    game.makeMove(bestMove);
+}
+
+// Run the test
+//testAI();
+*/
